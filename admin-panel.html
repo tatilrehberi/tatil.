@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Tavilo | Yönetim Paneli</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    background:#f4f7fb;
+    color:#071a35
+}
+
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+
+.login{
+    min-height:100vh;
+    display:grid;
+    place-items:center;
+    padding:20px;
+    background:linear-gradient(135deg,#071a35,#1769d1)
+}
+
+.login-card{
+    width:min(420px,100%);
+    background:#fff;
+    border-radius:24px;
+    padding:34px;
+    box-shadow:0 30px 80px #0004
+}
+
+.logo{
+    font-size:32px;
+    font-weight:900;
+    margin-bottom:8px
+}
+
+.logo span{color:#1769d1}
+
+.muted{color:#6d7c90}
+
+.field{margin:14px 0}
+
+.field label{
+    display:block;
+    font-size:13px;
+    font-weight:800;
+    margin-bottom:7px
+}
+
+.field input,
+.field select,
+.field textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #dbe4ee;
+    border-radius:12px;
+    outline:0
+}
+
+.field textarea{
+    min-height:90px;
+    resize:vertical
+}
+
+.btn{
+    border:0;
+    border-radius:12px;
+    padding:12px 16px;
+    font-weight:800
+}
+
+.primary{
+    background:#1769d1;
+    color:#fff
+}
+
+.danger{
+    background:#ffe8e8;
+    color:#b42318
+}
+
+.light{
+    background:#eef3f8;
+    color:#17304f
+}
+
+.error{
+    display:none;
+    background:#fff0f0;
+    color:#b42318;
+    padding:10px;
+    border-radius:10px;
+    margin:10px 0;
+    font-size:13px
+}
+
+.error.show{display:block}
+
+.app{
+    display:none;
+    min-height:100vh
+}
+
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    width:240px;
+    background:#071a35;
+    color:#fff;
+    padding:24px 16px
+}
+
+.brand{
+    font-size:28px;
+    font-weight:900;
+    padding:0 12px 25px
+}
+
+.brand span{color:#58adff}
+
+.nav button{
+    width:100%;
+    text-align:left;
+    border:0;
+    background:transparent;
+    color:#dce8f5;
+    padding:13px 12px;
+    border-radius:12px;
+    margin:3px 0;
+    font-weight:800
+}
+
+.nav button.active,
+.nav button:hover{
+    background:#ffffff16;
+    color:#fff
+}
+
+.main{
+    margin-left:240px;
+    padding:30px;
+    max-width:1500px
+}
+
+.top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px
+}
+
+.top h1{
+    margin:0;
+    font-size:30px
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:16px;
+    margin-bottom:22px
+}
+
+.stat{
+    background:#fff;
+    border:1px solid #e4ebf2;
+    border-radius:18px;
+    padding:20px
+}
+
+.stat small{
+    color:#6d7c90;
+    font-weight:700
+}
+
+.stat b{
+    display:block;
+    font-size:30px;
+    margin-top:8px
+}
+
+.panel{
+    background:#fff;
+    border:1px solid #e4ebf2;
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:20px
+}
+
+.panel-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    margin-bottom:16px
+}
+
+.panel-head h2{
+    margin:0;
+    font-size:20px
+}
+
+.table-wrap{overflow:auto}
+
+.table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:850px
+}
+
+.table th,
+.table td{
+    text-align:left;
+    padding:13px 10px;
+    border-bottom:1px solid #edf1f5;
+    font-size:13px
+}
+
+.table th{
+    font-size:11px;
+    color:#6d7c90;
+    text-transform:uppercase
+}
+
+.packages{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px
+}
+
+.pkg{
+    border:1px solid #e4ebf2;
+    border-radius:18px;
+    overflow:hidden;
+    background:#fff
+}
+
+.pkg img{
+    width:100%;
+    height:180px;
+    object-fit:cover
+}
+
+.pkg-body{
+    padding:16px
+}
+
+.pkg h3{
+    margin:0 0 7px
+}
+
+.pkg p{
+    font-size:13px;
+    color:#6d7c90;
+    line-height:1.5
+}
+
+.pkg-actions{
+    display:flex;
+    gap:8px
+}
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:#071a3599;
+    z-index:20;
+    align-items:center;
+    justify-content:center;
+    padding:20px
+}
+
+.modal.open{display:flex}
+
+.modal-card{
+    width:min(620px,100%);
+    max-height:92vh;
+    overflow:auto;
+    background:#fff;
+    border-radius:22px;
+    padding:25px
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px
+}
+
+.full{
+    grid-column:1/-1
+}
+
+.close{
+    float:right;
+    border:0;
+    background:#eef3f8;
+    border-radius:50%;
+    width:35px;
+    height:35px
+}
+
+.hidden{display:none!important}
+
+@media(max-width:900px){
+    .sidebar{width:200px}
+    .main{margin-left:200px}
+    .stats{grid-template-columns:1fr 1fr}
+    .packages{grid-template-columns:1fr 1fr}
+}
+
+@media(max-width:650px){
+    .sidebar{
+        position:static;
+        width:100%;
+        height:auto
+    }
+
+    .nav{
+        display:flex;
+        overflow:auto
+    }
+
+    .nav button{
+        white-space:nowrap
+    }
+
+    .main{
+        margin-left:0;
+        padding:16px
+    }
+
+    .stats,
+    .packages,
+    .form-grid{
+        grid-template-columns:1fr
+    }
+
+    .full{grid-column:auto}
+
+    .top{
+        align-items:flex-start;
+        gap:10px;
+        flex-direction:column
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- GİRİŞ -->
+
+<div id="login" class="login">
+
+    <div class="login-card">
+
+        <div class="logo">
+            Tavilo<span>.</span>
+        </div>
+
+        <p class="muted">
+            Yönetim paneline giriş
+        </p>
+
+        <div id="loginError" class="error">
+            Şifre yanlış.
+        </div>
+
+        <div class="field">
+
+            <label>Panel şifresi</label>
+
+            <input
+                id="password"
+                type="password"
+                autocomplete="current-password"
+                placeholder="Şifrenizi girin"
+            >
+
+        </div>
+
+        <button
+            class="btn primary"
+            style="width:100%"
+            onclick="login()"
+        >
+            Panele Gir
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- PANEL -->
+
+<div id="app" class="app">
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            Tavilo<span>.</span>
+        </div>
+
+        <div class="nav">
+
+            <button
+                class="active"
+                onclick="showPage('dashboard',this)"
+            >
+                📊 Dashboard
+            </button>
+
+            <button
+                onclick="showPage('reservations',this)"
+            >
+                📋 Rezervasyonlar
+            </button>
+
+            <button
+                onclick="showPage('packages',this)"
+            >
+                🏝️ Paketler
+            </button>
+
+            <button
+                onclick="showPage('settings',this)"
+            >
+                ⚙️ Ayarlar
+            </button>
+
+            <button
+                onclick="window.location.href='index.html'"
+            >
+                🌐 Siteye Git
+            </button>
+
+            <button onclick="logout()">
+                🚪 Çıkış
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main">
+
+        <!-- DASHBOARD -->
+
+        <section id="dashboard">
+
+            <div class="top">
+
+                <h1>Dashboard</h1>
+
+                <button
+                    class="btn light"
+                    onclick="refresh()"
+                >
+                    Yenile
+                </button>
+
+            </div>
+
+
+            <div class="stats">
+
+                <div class="stat">
+                    <small>Toplam Rezervasyon</small>
+                    <b id="sTotal">0</b>
+                </div>
+
+                <div class="stat">
+                    <small>Bekleyen</small>
+                    <b id="sPending">0</b>
+                </div>
+
+                <div class="stat">
+                    <small>Onaylanan</small>
+                    <b id="sApproved">0</b>
+                </div>
+
+                <div class="stat">
+                    <small>Aktif Paket</small>
+                    <b id="sPackages">0</b>
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="panel-head">
+                    <h2>Son Rezervasyonlar</h2>
+                </div>
+
+                <div id="dashTable"></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- REZERVASYONLAR -->
+
+        <section
+            id="reservations"
+            class="hidden"
+        >
+
+            <div class="top">
+
+                <h1>Rezervasyonlar</h1>
+
+                <button
+                    class="btn light"
+                    onclick="exportCSV()"
+                >
+                    CSV Dışa Aktar
+                </button>
+
+            </div>
+
+            <div class="panel">
+
+                <div id="reservationTable"></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- PAKETLER -->
+
+        <section
+            id="packages"
+            class="hidden"
+        >
+
+            <div class="top">
+
+                <h1>Paketler</h1>
+
+                <button
+                    class="btn primary"
+                    onclick="openPackage()"
+                >
+                    + Yeni Paket
+                </button>
+
+            </div>
+
+            <div
+                id="packageList"
+                class="packages"
+            ></div>
+
+        </section>
+
+
+        <!-- AYARLAR -->
+
+        <section
+            id="settings"
+            class="hidden"
+        >
+
+            <div class="top">
+
+                <h1>Ayarlar</h1>
+
+            </div>
+
+            <div class="panel">
+
+                <h2>Site Verileri</h2>
+
+                <p class="muted">
+                    Paketler ve rezervasyonlar aynı tarayıcıdaki index.html ile paylaşılır.
+                </p>
+
+                <button
+                    class="btn light"
+                    onclick="resetPackages()"
+                >
+                    Varsayılan paketleri geri yükle
+                </button>
+
+                <button
+                    class="btn danger"
+                    onclick="clearReservations()"
+                >
+                    Tüm rezervasyonları sil
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- PAKET MODALI -->
+
+<div id="pkgModal" class="modal">
+
+    <div class="modal-card">
+
+        <button
+            class="close"
+            onclick="closePackage()"
+        >
+            ×
+        </button>
+
+        <h2 id="modalTitle">
+            Yeni Paket
+        </h2>
+
+
+        <div class="form-grid">
+
+            <div class="field">
+
+                <label>Paket adı</label>
+
+                <input id="pName">
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Kategori</label>
+
+                <input
+                    id="pCategory"
+                    placeholder="Yaz Tatili"
+                >
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Rota / Konum</label>
+
+                <input id="pRoute">
+
+            </div>
+
+
+            <div class="field">
+
+                <label>Fiyat</label>
+
+                <input
+                    id="pPrice"
+                    placeholder="39.000 TL / kişi"
+                >
+
+            </div>
+
+
+            <div class="field full">
+
+                <label>Resim URL</label>
+
+                <input id="pImage">
+
+            </div>
+
+
+            <div class="field full">
+
+                <label>Açıklama</label>
+
+                <textarea id="pDesc"></textarea>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="btn primary"
+            onclick="savePackage()"
+        >
+            Kaydet
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   AYARLAR
+========================= */
+
+const KEY_P = "taviloPackages";
+const KEY_R = "taviloReservations";
+
+const PASS = "tavilo2026";
+
+
+/* =========================
+   VARSAYILAN PAKETLER
+========================= */
+
+const DEFAULTS = [
+
+    {
+        id:"p1",
+        name:"Antalya Premium Tatil",
+        category:"Yaz Tatili",
+        route:"Antalya",
+        price:"39.000 TL / kişi",
+        image:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=85",
+        desc:"Deniz, güneş ve konforu bir araya getiren premium Antalya tatili."
+    },
+
+    {
+        id:"p2",
+        name:"Erciyes Kış Turu",
+        category:"Kış Tatili",
+        route:"Kayseri – Erciyes",
+        price:"24.900 TL / kişi",
+        image:"https://images.unsplash.com/photo-1551524559-8af4e6624178?auto=format&fit=crop&w=1200&q=85",
+        desc:"Kayak ve dağ atmosferiyle keyifli bir Erciyes kaçamağı."
+    },
+
+    {
+        id:"p3",
+        name:"Karadeniz Doğa Kaçamağı",
+        category:"Doğa",
+        route:"Trabzon – Rize",
+        price:"21.900 TL / kişi",
+        image:"https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=85",
+        desc:"Karadeniz'in yeşili, yaylaları ve doğal güzellikleri."
+    }
+
+];
+
+
+let editId = null;
+
+
+/* =========================
+   GİRİŞ
+========================= */
+
+function login(){
+
+    const v =
+        document.getElementById("password").value;
+
+    if(v === PASS){
+
+        localStorage.setItem(
+            "taviloAdminLogin",
+            "1"
+        );
+
+        document.getElementById("login").style.display =
+            "none";
+
+        document.getElementById("app").style.display =
+            "block";
+
+        refresh();
+
+    }else{
+
+        document
+            .getElementById("loginError")
+            .classList.add("show");
+
+    }
+
+}
+
+
+document
+    .getElementById("password")
+    .addEventListener("keydown",function(e){
+
+        if(e.key === "Enter"){
+            login();
+        }
+
+    });
+
+
+function logout(){
+
+    localStorage.removeItem(
+        "taviloAdminLogin"
+    );
+
+    location.reload();
+
+}
+
+
+/* =========================
+   SAYFA DEĞİŞTİRME
+========================= */
+
+function showPage(id,btn){
+
+    document
+        .querySelectorAll("main section")
+        .forEach(function(x){
+
+            x.classList.add("hidden");
+
+        });
+
+
+    document
+        .getElementById(id)
+        .classList.remove("hidden");
+
+
+    document
+        .querySelectorAll(".nav button")
+        .forEach(function(x){
+
+            x.classList.remove("active");
+
+        });
+
+
+    if(btn){
+        btn.classList.add("active");
+    }
+
+
+    refresh();
+
+}
+
+
+/* =========================
+   PAKETLERİ OKU
+========================= */
+
+function getPackages(){
+
+    try{
+
+        const saved =
+            localStorage.getItem(KEY_P);
+
+
+        /* İlk açılış */
+
+        if(!saved){
+
+            localStorage.setItem(
+                KEY_P,
+                JSON.stringify(DEFAULTS)
+            );
+
+            return JSON.parse(
+                JSON.stringify(DEFAULTS)
+            );
+
+        }
+
+
+        const packages =
+            JSON.parse(saved);
+
+
+        if(!Array.isArray(packages)){
+
+            localStorage.setItem(
+                KEY_P,
+                JSON.stringify(DEFAULTS)
+            );
+
+            return JSON.parse(
+                JSON.stringify(DEFAULTS)
+            );
+
+        }
+
+
+        return packages;
+
+
+    }catch(e){
+
+        localStorage.setItem(
+            KEY_P,
+            JSON.stringify(DEFAULTS)
+        );
+
+        return JSON.parse(
+            JSON.stringify(DEFAULTS)
+        );
+
+    }
+
+}
+
+
+/* =========================
+   PAKETLERİ KAYDET
+========================= */
+
+function savePackages(packages){
+
+    localStorage.setItem(
+        KEY_P,
+        JSON.stringify(packages)
+    );
+
+}
+
+
+/* =========================
+   REZERVASYONLAR
+========================= */
+
+function getReservations(){
+
+    try{
+
+        return JSON.parse(
+            localStorage.getItem(KEY_R) || "[]"
+        );
+
+    }catch(e){
+
+        return [];
+
+    }
+
+}
+
+
+/* =========================
+   GENEL YENİLE
+========================= */
+
+function refresh(){
+
+    renderStats();
+    renderReservations();
+    renderPackages();
+
+}
+
+
+/* =========================
+   İSTATİSTİKLER
+========================= */
+
+function renderStats(){
+
+    const r = getReservations();
+    const p = getPackages();
+
+
+    document.getElementById("sTotal").textContent =
+        r.length;
+
+
+    document.getElementById("sPending").textContent =
+        r.filter(function(x){
+
+            return x.status === "Beklemede";
+
+        }).length;
+
+
+    document.getElementById("sApproved").textContent =
+        r.filter(function(x){
+
+            return x.status === "Onaylandı";
+
+        }).length;
+
+
+    document.getElementById("sPackages").textContent =
+        p.length;
+
+
+    const recent =
+        r.slice()
+         .reverse()
+         .slice(0,5);
+
+
+    document.getElementById("dashTable").innerHTML =
+        tableHTML(recent,false);
+
+}
+
+
+/* =========================
+   TABLO
+========================= */
+
+function tableHTML(r,full=true){
+
+    if(!r.length){
+
+        return `
+        <div
+            class="muted"
+            style="padding:30px;text-align:center"
+        >
+            Henüz rezervasyon yok.
+        </div>`;
+
+    }
+
+
+    return `
+    <div class="table-wrap">
+
+        <table class="table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Müşteri</th>
+                    <th>Paket</th>
+                    <th>Kişi</th>
+                    <th>Tarih</th>
+                    <th>Durum</th>
+
+                    ${full ? "<th>İşlem</th>" : ""}
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                ${
+                    r.map(function(x){
+
+                        return `
+
+                        <tr>
+
+                            <td>
+                                <b>${esc(x.name)}</b>
+                                <br>
+                                <span class="muted">
+                                    ${esc(x.phone || "")}
+                                </span>
+                            </td>
+
+                            <td>
+                                ${esc(x.package || "")}
+                            </td>
+
+                            <td>
+                                ${esc(x.people || "")}
+                            </td>
+
+                            <td>
+                                ${esc(x.date || "")}
+                            </td>
+
+                            <td>
+
+                                <select
+                                    onchange="statusChange('${escAttr(x.id)}',this.value)"
+                                >
+
+                                    <option
+                                        ${x.status==="Beklemede"?"selected":""}
+                                    >
+                                        Beklemede
+                                    </option>
+
+                                    <option
+                                        ${x.status==="Onaylandı"?"selected":""}
+                                    >
+                                        Onaylandı
+                                    </option>
+
+                                    <option
+                                        ${x.status==="İptal"?"selected":""}
+                                    >
+                                        İptal
+                                    </option>
+
+                                </select>
+
+                            </td>
+
+                            ${
+                                full
+                                ?
+                                `
+                                <td>
+
+                                    <button
+                                        class="btn danger"
+                                        onclick="deleteReservation('${escAttr(x.id)}')"
+                                    >
+                                        Sil
+                                    </button>
+
+                                </td>
+                                `
+                                :
+                                ""
+                            }
+
+                        </tr>
+
+                        `;
+
+                    }).join("")
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>`;
+
+}
+
+
+function renderReservations(){
+
+    document.getElementById(
+        "reservationTable"
+    ).innerHTML =
+        tableHTML(
+            getReservations(),
+            true
+        );
+
+}
+
+
+/* =========================
+   REZERVASYON DURUMU
+========================= */
+
+function statusChange(id,status){
+
+    const r = getReservations();
+
+    const x =
+        r.find(function(a){
+
+            return String(a.id) === String(id);
+
+        });
+
+
+    if(x){
+
+        x.status = status;
+
+        localStorage.setItem(
+            KEY_R,
+            JSON.stringify(r)
+        );
+
+        refresh();
+
+    }
+
+}
+
+
+/* =========================
+   REZERVASYON SİL
+========================= */
+
+function deleteReservation(id){
+
+    if(!confirm("Bu rezervasyon silinsin mi?")){
+        return;
+    }
+
+
+    const filtered =
+        getReservations().filter(function(x){
+
+            return String(x.id) !== String(id);
+
+        });
+
+
+    localStorage.setItem(
+        KEY_R,
+        JSON.stringify(filtered)
+    );
+
+
+    refresh();
+
+}
+
+
+/* =========================
+   PAKETLERİ GÖSTER
+========================= */
+
+function renderPackages(){
+
+    const packages =
+        getPackages();
+
+
+    const list =
+        document.getElementById("packageList");
+
+
+    if(!packages.length){
+
+        list.innerHTML = `
+        <div
+            class="panel"
+            style="grid-column:1/-1;text-align:center"
+        >
+            <h3>Henüz paket yok.</h3>
+            <p class="muted">
+                Yeni Paket butonundan paket ekleyebilirsiniz.
+            </p>
+        </div>`;
+
+        return;
+
+    }
+
+
+    list.innerHTML =
+        packages.map(function(p){
+
+            return `
+
+            <article class="pkg">
+
+                <img
+                    src="${escAttr(p.image)}"
+                    onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=85'"
+                >
+
+                <div class="pkg-body">
+
+                    <small class="muted">
+                        ${esc(p.category)}
+                        ·
+                        ${esc(p.route)}
+                    </small>
+
+                    <h3>
+                        ${esc(p.name)}
+                    </h3>
+
+                    <p>
+                        ${esc(p.desc)}
+                    </p>
+
+                    <b>
+                        ${esc(p.price)}
+                    </b>
+
+
+                    <div
+                        class="pkg-actions"
+                        style="margin-top:14px"
+                    >
+
+                        <button
+                            class="btn light"
+                            onclick="openPackage('${escAttr(p.id)}')"
+                        >
+                            Düzenle
+                        </button>
+
+                        <button
+                            class="btn danger"
+                            onclick="deletePackage('${escAttr(p.id)}')"
+                        >
+                            Sil
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </article>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/* =========================
+   PAKET DÜZENLE / YENİ
+========================= */
+
+function openPackage(id){
+
+    editId =
+        id !== undefined &&
+        id !== null &&
+        id !== ""
+        ?
+        String(id)
+        :
+        null;
+
+
+    const packages =
+        getPackages();
+
+
+    let p = null;
+
+
+    if(editId){
+
+        p =
+            packages.find(function(item){
+
+                return String(item.id) === editId;
+
+            });
+
+    }
+
+
+    document.getElementById(
+        "modalTitle"
+    ).textContent =
+        p
+        ?
+        "Paketi Düzenle"
+        :
+        "Yeni Paket";
+
+
+    document.getElementById("pName").value =
+        p ? p.name || "" : "";
+
+
+    document.getElementById("pCategory").value =
+        p ? p.category || "" : "";
+
+
+    document.getElementById("pRoute").value =
+        p ? p.route || "" : "";
+
+
+    document.getElementById("pPrice").value =
+        p ? p.price || "" : "";
+
+
+    document.getElementById("pImage").value =
+        p ? p.image || "" : "";
+
+
+    document.getElementById("pDesc").value =
+        p ? p.desc || "" : "";
+
+
+    document
+        .getElementById("pkgModal")
+        .classList.add("open");
+
+}
+
+
+/* =========================
+   MODAL KAPAT
+========================= */
+
+function closePackage(){
+
+    document
+        .getElementById("pkgModal")
+        .classList.remove("open");
+
+}
+
+
+/* =========================
+   PAKET KAYDET
+========================= */
+
+function savePackage(){
+
+    const name =
+        document.getElementById("pName")
+        .value
+        .trim();
+
+
+    if(!name){
+
+        alert("Paket adı gerekli.");
+
+        return;
+
+    }
+
+
+    const packageData = {
+
+        id:
+            editId ||
+            "p" + Date.now(),
+
+        name:name,
+
+        category:
+            document
+            .getElementById("pCategory")
+            .value
+            .trim(),
+
+        route:
+            document
+            .getElementById("pRoute")
+            .value
+            .trim(),
+
+        price:
+            document
+            .getElementById("pPrice")
+            .value
+            .trim(),
+
+        image:
+            document
+            .getElementById("pImage")
+            .value
+            .trim(),
+
+        desc:
+            document
+            .getElementById("pDesc")
+            .value
+            .trim()
+
+    };
+
+
+    const packages =
+        getPackages();
+
+
+    const index =
+        packages.findIndex(function(x){
+
+            return String(x.id) ===
+                   String(packageData.id);
+
+        });
+
+
+    if(index >= 0){
+
+        /* MEVCUT PAKETİ GÜNCELLE */
+
+        packages[index] =
+            packageData;
+
+    }else{
+
+        /* YENİ PAKET EKLE */
+
+        packages.push(
+            packageData
+        );
+
+    }
+
+
+    savePackages(packages);
+
+
+    closePackage();
+
+
+    editId = null;
+
+
+    refresh();
+
+}
+
+
+/* =========================
+   PAKET SİL
+========================= */
+
+function deletePackage(id){
+
+    if(!confirm("Bu paket silinsin mi?")){
+        return;
+    }
+
+
+    const packages =
+        getPackages();
+
+
+    const filtered =
+        packages.filter(function(x){
+
+            return String(x.id) !==
+                   String(id);
+
+        });
+
+
+    savePackages(filtered);
+
+
+    refresh();
+
+}
+
+
+/* =========================
+   VARSAYILANLARA DÖN
+========================= */
+
+function resetPackages(){
+
+    if(!confirm(
+        "Varsayılan paketler geri yüklensin mi?"
+    )){
+        return;
+    }
+
+
+    savePackages(
+        JSON.parse(
+            JSON.stringify(DEFAULTS)
+        )
+    );
+
+
+    refresh();
+
+}
+
+
+/* =========================
+   REZERVASYONLARI TEMİZLE
+========================= */
+
+function clearReservations(){
+
+    if(!confirm(
+        "TÜM rezervasyonlar silinecek. Emin misin?"
+    )){
+        return;
+    }
+
+
+    localStorage.removeItem(
+        KEY_R
+    );
+
+
+    refresh();
+
+}
+
+
+/* =========================
+   CSV
+========================= */
+
+function exportCSV(){
+
+    const r =
+        getReservations();
+
+
+    if(!r.length){
+
+        alert(
+            "Dışa aktarılacak rezervasyon yok."
+        );
+
+        return;
+
+    }
+
+
+    const heads = [
+        "id",
+        "package",
+        "name",
+        "phone",
+        "email",
+        "people",
+        "date",
+        "date2",
+        "note",
+        "status",
+        "createdAt"
+    ];
+
+
+    const csv = [
+
+        heads.join(","),
+
+        ...r.map(function(x){
+
+            return heads.map(function(h){
+
+                return `"${String(
+                    x[h] ?? ""
+                ).replace(/"/g,'""')}"`;
+
+            }).join(",");
+
+        })
+
+    ].join("\n");
+
+
+    const blob =
+        new Blob(
+            ["\ufeff" + csv],
+            {
+                type:
+                "text/csv;charset=utf-8"
+            }
+        );
+
+
+    const a =
+        document.createElement("a");
+
+
+    a.href =
+        URL.createObjectURL(blob);
+
+
+    a.download =
+        "tavilo-rezervasyonlar.csv";
+
+
+    a.click();
+
+
+    URL.revokeObjectURL(
+        a.href
+    );
+
+}
+
+
+/* =========================
+   GÜVENLİ METİN
+========================= */
+
+function esc(s){
+
+    return String(s ?? "")
+        .replace(
+            /[&<>"']/g,
+            function(m){
+
+                return {
+
+                    "&":"&amp;",
+                    "<":"&lt;",
+                    ">":"&gt;",
+                    '"':"&quot;",
+                    "'":"&#39;"
+
+                }[m];
+
+            }
+        );
+
+}
+
+
+function escAttr(s){
+
+    return esc(s);
+
+}
+
+
+/* =========================
+   STORAGE DEĞİŞİNCE YENİLE
+========================= */
+
+window.addEventListener(
+    "storage",
+    refresh
+);
+
+
+/* =========================
+   OTOMATİK GİRİŞ
+========================= */
+
+if(
+    localStorage.getItem(
+        "taviloAdminLogin"
+    ) === "1"
+){
+
+    document.getElementById(
+        "login"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "app"
+    ).style.display = "block";
+
+
+    refresh();
+
+}
+
+</script>
+
+</body>
+</html>
